@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Scriptables;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public enum CurrentState { None, Crafting }
@@ -43,6 +44,10 @@ namespace Crafting {
         
         [Header("Items")]
         [SerializeField] private List<ItemSO> allItems;
+
+        [Header("Events")]
+        [SerializeField] private List<UnityEvent> onCraftingSucceeded;
+        [SerializeField] private List<UnityEvent> onCraftingFailed;
 
         private CurrentState state = CurrentState.None;
         public CurrentState GetState() => state;
@@ -142,8 +147,16 @@ namespace Crafting {
             
             if (CountSuccessChance(item)) {
                 Equipment.Equipment.Instance.AddItem(item);
+                foreach (var _event in onCraftingSucceeded) {
+                    _event.Invoke();
+                }
+                
                 progressResultText.text = "<color=green>Success!</color>";
             } else {
+                foreach (var _event in onCraftingFailed) {
+                    _event.Invoke();
+                }
+                
                 progressResultText.text = "<color=red>Failed!</color>";
             }
             
@@ -158,6 +171,7 @@ namespace Crafting {
         }
 
         private void OpenRecipeBook() {
+            if (recipeBookWindow.activeSelf) return;
             recipeBookWindow.SetActive(true);
 
             foreach (var item in allItems) {
@@ -175,7 +189,7 @@ namespace Crafting {
             }
         }
 
-        private void CloseRecipeBook() {
+        public void CloseRecipeBook() {
             for (var i = 0; i < recipesContainer.childCount; i++) {
                 Destroy(recipesContainer.GetChild(i).gameObject);
             }

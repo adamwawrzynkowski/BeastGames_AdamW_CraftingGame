@@ -61,8 +61,7 @@ public class EquipmentSlot : MonoBehaviour, IEquipmentSlot, IPointerEnterHandler
     }
 
     public void Throw() {
-        // Logic
-        
+        Equipment.Equipment.Instance.ThrowItem(assignedItem);
         Remove();
     }
 

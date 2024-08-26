@@ -110,15 +110,24 @@ namespace Equipment {
                     }
                 }
                 
+                HideTooltip();
+                Crafting.Crafting.Instance.CloseRecipeBook();
                 inventoryWindow.SetActive(false);
             }
         }
 
         public void AddItem(ItemSO item) {
             var slot = FindAvailableSlot();
-            if (slot == null) return;
+            if (slot == null) {
+                ThrowItem(item);
+                return;
+            }
             
             slot.Assign(item);
+        }
+
+        public void ThrowItem(ItemSO item) {
+            
         }
 
         private EquipmentSlot FindSlot(ItemSO item, int id) {
@@ -190,8 +199,7 @@ namespace Equipment {
             }
             
             itemTooltipWindow.gameObject.SetActive(true);
-            Transform slot;
-            slot = FindSlot(item, id) == null ? FindCraftingSlot(item, id).transform : FindSlot(item, id).transform;
+            var slot = FindSlot(item, id) == null ? FindCraftingSlot(item, id).transform : FindSlot(item, id).transform;
 
             itemTooltipWindow.transform.position = new Vector3(
                 slot.position.x + tooltipOffset.x * canvas.scaleFactor,
