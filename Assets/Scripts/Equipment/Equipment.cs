@@ -43,7 +43,8 @@ namespace Equipment {
         
         public ItemSO testitemone;
         public ItemSO testitemtwo;
-
+        public ItemSO testitemthree;
+        
         private void Start() {
             Construct();
         }
@@ -55,6 +56,10 @@ namespace Equipment {
             
             if (Input.GetKeyDown(KeyCode.Alpha2)) {
                 AddItem(testitemtwo);
+            }
+            
+            if (Input.GetKeyDown(KeyCode.Alpha3)) {
+                AddItem(testitemthree);
             }
             
             if (pickedItem == null) return;
@@ -143,7 +148,7 @@ namespace Equipment {
             itemTooltipWindow.transform.position = new Vector3(
                 slot.position.x + tooltipOffset.x * canvas.scaleFactor,
                 slot.position.y + tooltipOffset.y * canvas.scaleFactor);
-            
+
             itemTooltipItemNameText.text = item.itemName;
         }
 

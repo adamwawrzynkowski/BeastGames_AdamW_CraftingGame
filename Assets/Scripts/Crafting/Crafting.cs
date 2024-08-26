@@ -74,7 +74,12 @@ namespace Crafting {
         private void ShowCraftingResult(ItemSO item) {
             craftingResultIcon.sprite = item.itemIcon;
             craftingResultIcon.enabled = true;
-            craftingChanceText.text = "Chance: " + item.craftingChance + "%";
+            
+            var textColor = "";
+            if (item.craftingChance <= 25) textColor = "<color=red>";
+            if (item.craftingChance > 25) textColor = "<color=yellow>";
+            if (item.craftingChance >= 75) textColor = "<color=green>";
+            craftingChanceText.text = "Chance: " + textColor + item.craftingChance + "%" + "</color>";
             
             craftButton.interactable = true;
             craftButton.onClick.AddListener(() => Craft(item));

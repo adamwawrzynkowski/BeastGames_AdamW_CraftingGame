@@ -16,6 +16,6 @@ MonoBehaviour:
   itemIcon: {fileID: 21300000, guid: ab7c1b978bbfa42fcaac160e1d348e59, type: 3}
   itemPrefab: {fileID: 2574562804041788181, guid: 42ddeb68fcebe42fab6e8f95710eeb56,
     type: 3}
-  firstCraftingItem: {fileID: 11400000, guid: d4198e48a3692404b8bcfea6b3540f84, type: 2}
-  secondCraftingItem: {fileID: 11400000, guid: 11ebdbf5f10c843d286a429862524bb7, type: 2}
-  craftingChance: 60
+  firstCraftingItem: {fileID: 11400000, guid: db8a5d5c3bb1a453c9f2b8e39af20589, type: 2}
+  secondCraftingItem: {fileID: 11400000, guid: c0636f1ec53544312877a6db5ecaf849, type: 2}
+  craftingChance: 20

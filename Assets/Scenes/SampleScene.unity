@@ -401,8 +401,9 @@ MonoBehaviour:
   itemTooltipWindow: {fileID: 1026254394}
   itemTooltipItemNameText: {fileID: 562657461}
   tooltipOffset: {x: 0, y: -128}
-  testitemone: {fileID: 11400000, guid: d4198e48a3692404b8bcfea6b3540f84, type: 2}
-  testitemtwo: {fileID: 11400000, guid: 11ebdbf5f10c843d286a429862524bb7, type: 2}
+  testitemone: {fileID: 11400000, guid: 10468888bb3b043c3a3abb904165a833, type: 2}
+  testitemtwo: {fileID: 11400000, guid: 04c7d50fba59a4d7e9e492f4e62374d7, type: 2}
+  testitemthree: {fileID: 11400000, guid: 4b003e374a53645e294edb90434c4d4e, type: 2}
 --- !u!1 &210062922
 GameObject:
   m_ObjectHideFlags: 0
@@ -559,8 +560,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278320896
-  m_fontColor: {r: 0, g: 1, b: 0.00427413, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -1747,9 +1748,13 @@ MonoBehaviour:
   progressResultText: {fileID: 1849474558}
   progressItemIcon: {fileID: 921598097}
   allItems:
+  - {fileID: 11400000, guid: 4b003e374a53645e294edb90434c4d4e, type: 2}
   - {fileID: 11400000, guid: 1932df1c5c10a43bc894cdc75b65f55d, type: 2}
-  - {fileID: 11400000, guid: d4198e48a3692404b8bcfea6b3540f84, type: 2}
-  - {fileID: 11400000, guid: 11ebdbf5f10c843d286a429862524bb7, type: 2}
+  - {fileID: 11400000, guid: c0636f1ec53544312877a6db5ecaf849, type: 2}
+  - {fileID: 11400000, guid: 04c7d50fba59a4d7e9e492f4e62374d7, type: 2}
+  - {fileID: 11400000, guid: 7b977027ee356451dab4045b32b68fc0, type: 2}
+  - {fileID: 11400000, guid: 10468888bb3b043c3a3abb904165a833, type: 2}
+  - {fileID: 11400000, guid: db8a5d5c3bb1a453c9f2b8e39af20589, type: 2}
 --- !u!1 &738757111
 GameObject:
   m_ObjectHideFlags: 0
