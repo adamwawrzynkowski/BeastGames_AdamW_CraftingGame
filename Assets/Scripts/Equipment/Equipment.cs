@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Crafting;
 using Scriptables;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -26,6 +27,13 @@ namespace Equipment {
         [Space]
         [SerializeField] private Image pickedItemIcon;
 
+        [Space]
+        [SerializeField] private RectTransform itemTooltipWindow;
+        [SerializeField] private TMP_Text itemTooltipItemNameText;
+
+        [Header("Settings")]
+        [SerializeField] private Vector2 tooltipOffset;
+        
         private List<EquipmentSlot> slots = new List<EquipmentSlot>();
         private List<CraftingSlot> craftingSlots = new List<CraftingSlot>();
         public List<CraftingSlot> GetCraftingSlots => craftingSlots;
@@ -60,19 +68,20 @@ namespace Equipment {
             slot.Assign(item);
         }
 
+        private EquipmentSlot FindSlot(ItemSO item, int id) {
+            return slots.FirstOrDefault(slot => item == slot.GetInfo() && slot.GetID() == id);
+        }
+        
+        private CraftingSlot FindCraftingSlot(ItemSO item, int id) {
+            return craftingSlots.FirstOrDefault(slot => item == slot.GetInfo() && slot.GetID() == id);
+        }
+
         private void RemoveItem(ItemSO item, int id) {
-            if (id < 0) {
-                foreach (var slot in craftingSlots.Where(slot => item == slot.GetInfo() && slot.GetID() == id)) {
-                    slot.Remove();
-                    break;
-                }
-                
-                return;
-            }
-            
-            foreach (var slot in slots.Where(slot => item == slot.GetInfo() && slot.GetID() == id)) {
-                slot.Remove();
-                break;
+            var slot = FindSlot(item, id);
+            if (slot != null) slot.Remove();
+            else {
+                var craftingSlot = FindCraftingSlot(item, id);
+                if (craftingSlot != null) craftingSlot.Remove();
             }
         }
 
@@ -83,6 +92,7 @@ namespace Equipment {
             pickedItemIcon.enabled = true;
             
             RemoveItem(item, id);
+            HideTooltip();
         }
 
         public void RemovePickedItem() {
@@ -119,9 +129,26 @@ namespace Equipment {
         private EquipmentSlot FindAvailableSlot() {
             return slots.FirstOrDefault(slot => slot.GetInfo() == null);
         }
-        
-        private Vector2 GetOverlayPosition() {
-            return new Vector2(Input.mousePosition.x, Input.mousePosition.y) - new Vector2(pickedItemRect.position.x, pickedItemRect.position.y);
+
+        public void ShowTooltip(ItemSO item, int id) {
+            if (pickedItem != null) {
+                HideTooltip();
+                return;
+            }
+            
+            itemTooltipWindow.gameObject.SetActive(true);
+            Transform slot;
+            slot = FindSlot(item, id) == null ? FindCraftingSlot(item, id).transform : FindSlot(item, id).transform;
+
+            itemTooltipWindow.transform.position = new Vector3(
+                slot.position.x + tooltipOffset.x * canvas.scaleFactor,
+                slot.position.y + tooltipOffset.y * canvas.scaleFactor);
+            
+            itemTooltipItemNameText.text = item.itemName;
+        }
+
+        public void HideTooltip() {
+            itemTooltipWindow.gameObject.SetActive(false);
         }
     }
 }

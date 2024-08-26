@@ -68,12 +68,19 @@ namespace Crafting {
         public void OnPointerEnter(PointerEventData eventData) {
             if (eventData.pointerEnter) {
                 focused = true;
+                transform.localScale = new Vector3(1.05f, 1.05f, 1.05f);
+            
+                if (assignedItem == null) return;
+                Equipment.Equipment.Instance.ShowTooltip(assignedItem, slotID);
             }
         }
         
         public void OnPointerExit(PointerEventData eventData) {
             if (eventData.fullyExited) {
                 focused = false;
+                transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+                
+                Equipment.Equipment.Instance.HideTooltip();
             }
         }
     }
