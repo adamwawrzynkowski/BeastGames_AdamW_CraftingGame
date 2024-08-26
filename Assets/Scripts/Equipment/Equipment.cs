@@ -6,6 +6,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+public enum InventoryState { Closed, Opened }
+
 namespace Equipment {
     public class Equipment : MonoBehaviour {
         public static Equipment Instance;
@@ -16,7 +18,13 @@ namespace Equipment {
         [Header("Camera")]
         [SerializeField] private Camera camera;
 
+        [Header("Input")]
+        [SerializeField] private KeyCode toggleInventoryKey;
+
         [Header("UI")]
+        [SerializeField] private GameObject inventoryWindow;
+        
+        [Space]
         [SerializeField] private Canvas canvas;
         [SerializeField] private CanvasScaler scaler;
         
@@ -40,6 +48,8 @@ namespace Equipment {
         
         private ItemSO pickedItem;
         private RectTransform pickedItemRect;
+
+        private InventoryState state = InventoryState.Closed;
         
         public ItemSO testitemone;
         public ItemSO testitemtwo;
@@ -61,9 +71,47 @@ namespace Equipment {
             if (Input.GetKeyDown(KeyCode.Alpha3)) {
                 AddItem(testitemthree);
             }
+
+            if (Input.GetKeyDown(toggleInventoryKey)) {
+                ToggleInventory();
+            }
+            
+            if (Input.GetKeyDown(KeyCode.Escape)) {
+                ToggleInventory(true);
+            }
             
             if (pickedItem == null) return;
             pickedItemRect.transform.position = Input.mousePosition;
+        }
+
+        private void ToggleInventory(bool forceClose = false) {
+            if (Crafting.Crafting.Instance.GetState() == CurrentState.Crafting) return;
+
+            if (!forceClose) {
+                if (state == InventoryState.Closed) state = InventoryState.Opened; else state = InventoryState.Closed;
+            } else {
+                state = InventoryState.Closed;
+            }
+
+            if (state == InventoryState.Opened) {
+                inventoryWindow.SetActive(true);
+            }
+
+            if (state == InventoryState.Closed) {
+                if (pickedItem != null) {
+                    AddItem(pickedItem);
+                    RemovePickedItem();
+                }
+
+                foreach (var slot in craftingSlots) {
+                    if (slot.GetInfo() != null) {
+                        AddItem(slot.GetInfo());
+                        slot.Remove();
+                    }
+                }
+                
+                inventoryWindow.SetActive(false);
+            }
         }
 
         public void AddItem(ItemSO item) {

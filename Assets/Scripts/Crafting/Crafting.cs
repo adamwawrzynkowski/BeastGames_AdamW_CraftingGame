@@ -5,6 +5,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+public enum CurrentState { None, Crafting }
+
 namespace Crafting {
     public class Crafting : MonoBehaviour {
         public static Crafting Instance;
@@ -41,6 +43,9 @@ namespace Crafting {
         
         [Header("Items")]
         [SerializeField] private List<ItemSO> allItems;
+
+        private CurrentState state = CurrentState.None;
+        public CurrentState GetState() => state;
 
         private void Start() {
             firstCraftingSlot.Init(-1);
@@ -112,6 +117,7 @@ namespace Crafting {
         }
 
         private void Craft(ItemSO item) {
+            state = CurrentState.Crafting;
             StartCoroutine(DoCraft(item));
             
             RemoveCraftingItems();
@@ -143,6 +149,8 @@ namespace Crafting {
             
             yield return new WaitForSeconds(2.0f);
             progressWindow.SetActive(false);
+            
+            state = CurrentState.None;
         }
 
         private bool CountSuccessChance(ItemSO item) {
