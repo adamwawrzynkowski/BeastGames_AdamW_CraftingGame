@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Crafting;
 using Scriptables;
 using UnityEngine;
 using UnityEngine.UI;
@@ -26,6 +27,8 @@ namespace Equipment {
         [SerializeField] private Image pickedItemIcon;
 
         private List<EquipmentSlot> slots = new List<EquipmentSlot>();
+        private List<CraftingSlot> craftingSlots = new List<CraftingSlot>();
+        public List<CraftingSlot> GetCraftingSlots => craftingSlots;
         
         private ItemSO pickedItem;
         private RectTransform pickedItemRect;
@@ -57,7 +60,16 @@ namespace Equipment {
             slot.Assign(item);
         }
 
-        public void RemoveItem(ItemSO item, int id) {
+        private void RemoveItem(ItemSO item, int id) {
+            if (id < 0) {
+                foreach (var slot in craftingSlots.Where(slot => item == slot.GetInfo() && slot.GetID() == id)) {
+                    slot.Remove();
+                    break;
+                }
+                
+                return;
+            }
+            
             foreach (var slot in slots.Where(slot => item == slot.GetInfo() && slot.GetID() == id)) {
                 slot.Remove();
                 break;
