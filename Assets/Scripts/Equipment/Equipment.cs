@@ -13,16 +13,17 @@ namespace Equipment {
 
         [Header("Camera")]
         [SerializeField] private Camera camera;
-        
+
         [Header("UI")]
+        [SerializeField] private Canvas canvas;
+        [SerializeField] private CanvasScaler scaler;
+        
+        [Space]
         [SerializeField] private Transform equipmentSlotsContainer;
         [SerializeField] private GameObject equipmentSlot;
 
         [Space]
         [SerializeField] private Image pickedItemIcon;
-
-        [Header("Settings")]
-        [SerializeField] private Vector2 pickedItemOffset;
 
         private List<EquipmentSlot> slots = new List<EquipmentSlot>();
         
@@ -46,10 +47,7 @@ namespace Equipment {
             }
             
             if (pickedItem == null) return;
-            Vector2 pos;
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(pickedItemRect, Input.mousePosition,
-                null, out pos);
-            pickedItemRect.anchoredPosition3D = pos;
+            pickedItemRect.transform.position = Input.mousePosition;
         }
 
         public void AddItem(ItemSO item) {
@@ -59,20 +57,20 @@ namespace Equipment {
             slot.Assign(item);
         }
 
-        public void RemoveItem(ItemSO item) {
-            foreach (var slot in slots.Where(slot => item == slot.GetInfo())) {
+        public void RemoveItem(ItemSO item, int id) {
+            foreach (var slot in slots.Where(slot => item == slot.GetInfo() && slot.GetID() == id)) {
                 slot.Remove();
                 break;
             }
         }
 
-        public void PickItem(ItemSO item) {
+        public void PickItem(ItemSO item, int id) {
             pickedItem = item;
             pickedItemRect = pickedItemIcon.GetComponent<RectTransform>();
             pickedItemIcon.sprite = item.itemIcon;
             pickedItemIcon.enabled = true;
             
-            RemoveItem(item);
+            RemoveItem(item, id);
         }
 
         public void RemovePickedItem() {
@@ -92,20 +90,26 @@ namespace Equipment {
 
         private void Construct() {
             for (var i = 0; i < 24; i++) {
-                slots.Add(CreateSlot());
+                slots.Add(CreateSlot(i));
             }
         }
 
-        private EquipmentSlot CreateSlot() {
+        private EquipmentSlot CreateSlot(int i) {
             var newSlot = Instantiate(equipmentSlot, equipmentSlotsContainer);
+            newSlot.name += "_" + i;
+            
             var slot = newSlot.AddComponent<EquipmentSlot>();
             
-            slot.Init();
+            slot.Init(i);
             return slot;
         }
 
         private EquipmentSlot FindAvailableSlot() {
             return slots.FirstOrDefault(slot => slot.GetInfo() == null);
+        }
+        
+        private Vector2 GetOverlayPosition() {
+            return new Vector2(Input.mousePosition.x, Input.mousePosition.y) - new Vector2(pickedItemRect.position.x, pickedItemRect.position.y);
         }
     }
 }

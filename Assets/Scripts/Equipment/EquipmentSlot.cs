@@ -1,4 +1,3 @@
-using System;
 using Equipment;
 using Interfaces;
 using Scriptables;
@@ -12,9 +11,13 @@ public class EquipmentSlot : MonoBehaviour, IEquipmentSlot, IPointerEnterHandler
     // UI
     private Image icon;
 
+    private int slotID;
+    public int GetID() => slotID;
+    
     private bool focused;
 
-    public void Init() {
+    public void Init(int ID) {
+        slotID = ID;
         icon = GetComponent<EquipmentSlotReferenceHelper>().icon;
         icon.enabled = false;
     }
@@ -23,17 +26,21 @@ public class EquipmentSlot : MonoBehaviour, IEquipmentSlot, IPointerEnterHandler
         if (!focused) return;
         if (Input.GetKeyDown(KeyCode.Mouse0)) {
             if (Equipment.Equipment.Instance.CheckPickedItem()) {
+                if (Equipment.Equipment.Instance.GetPickedItem() == assignedItem) {
+                    return;
+                }
+                
                 var wasItemAssigned = assignedItem;
                 
                 Assign(Equipment.Equipment.Instance.GetPickedItem());
                 Equipment.Equipment.Instance.RemovePickedItem();
                 
                 if (wasItemAssigned != null) {
-                    Equipment.Equipment.Instance.PickItem(wasItemAssigned);
+                    Equipment.Equipment.Instance.PickItem(wasItemAssigned, slotID);
                 }
             } else {
                 if (assignedItem == null) return;
-                Equipment.Equipment.Instance.PickItem(assignedItem);
+                Equipment.Equipment.Instance.PickItem(assignedItem, slotID);
             }
         }
     }
@@ -65,10 +72,14 @@ public class EquipmentSlot : MonoBehaviour, IEquipmentSlot, IPointerEnterHandler
     }
 
     public void OnPointerEnter(PointerEventData eventData) {
-        if (eventData.pointerEnter) focused = true;
+        if (eventData.pointerEnter) {
+            focused = true;
+        }
     }
 
     public void OnPointerExit(PointerEventData eventData) {
-        if (eventData.fullyExited) focused = false;
+        if (eventData.fullyExited) {
+            focused = false;
+        }
     }
 }
