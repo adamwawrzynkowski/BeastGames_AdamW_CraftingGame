@@ -20,6 +20,7 @@ namespace Crafting {
         [SerializeField] private Image craftingResultIcon;
         [SerializeField] private Button craftButton;
         [SerializeField] private TMP_Text craftingChanceText;
+        [SerializeField] private TMP_Text craftingResultItemName;
 
         [Header("Progress Window")]
         [SerializeField] private GameObject progressWindow;
@@ -31,6 +32,13 @@ namespace Crafting {
         [SerializeField] private TMP_Text progressResultText;
         [SerializeField] private Image progressItemIcon;
 
+        [Header("Recipe Book")]
+        [SerializeField] private GameObject recipeBookWindow;
+        [SerializeField] private GameObject recipeItemPrefab;
+        [SerializeField] private Button openRecipeBook;
+        [SerializeField] private Button closeRecipeBook;
+        [SerializeField] private Transform recipesContainer;
+        
         [Header("Items")]
         [SerializeField] private List<ItemSO> allItems;
 
@@ -40,6 +48,9 @@ namespace Crafting {
             
             Equipment.Equipment.Instance.GetCraftingSlots.Add(firstCraftingSlot);
             Equipment.Equipment.Instance.GetCraftingSlots.Add(secondCraftingSlot);
+            
+            openRecipeBook.onClick.AddListener(OpenRecipeBook);
+            closeRecipeBook.onClick.AddListener(CloseRecipeBook);
             
             ClearCraftingResult();
         }
@@ -51,18 +62,17 @@ namespace Crafting {
             }
             
             foreach (var item in allItems) {
-                var first = false;
-                var second = false;
-                    
-                if (item.firstCraftingItem == firstCraftingSlot.GetInfo() || item.secondCraftingItem == firstCraftingSlot.GetInfo()) {
-                    first = true;
+                var recipeFound = false;
+                
+                if (firstCraftingSlot.GetInfo() == item.firstCraftingItem && secondCraftingSlot.GetInfo() == item.secondCraftingItem) {
+                    recipeFound = true;
                 }
-                    
-                if (item.firstCraftingItem == secondCraftingSlot.GetInfo() || item.secondCraftingItem == secondCraftingSlot.GetInfo()) {
-                    second = true;
+                
+                if (firstCraftingSlot.GetInfo() == item.secondCraftingItem && secondCraftingSlot.GetInfo() == item.firstCraftingItem) {
+                    recipeFound = true;
                 }
 
-                if (first && second) {
+                if (recipeFound) {
                     ShowCraftingResult(item);
                     return;
                 }
@@ -74,6 +84,7 @@ namespace Crafting {
         private void ShowCraftingResult(ItemSO item) {
             craftingResultIcon.sprite = item.itemIcon;
             craftingResultIcon.enabled = true;
+            craftingResultItemName.text = item.itemName;
             
             var textColor = "";
             if (item.craftingChance <= 25) textColor = "<color=red>";
@@ -89,6 +100,7 @@ namespace Crafting {
             craftingResultIcon.sprite = null;
             craftingResultIcon.enabled = false;
             craftingChanceText.text = null;
+            craftingResultItemName.text = null;
             
             craftButton.interactable = false;
             craftButton.onClick.RemoveAllListeners();
@@ -135,6 +147,32 @@ namespace Crafting {
 
         private bool CountSuccessChance(ItemSO item) {
             return Random.Range(0, 101) <= item.craftingChance;
+        }
+
+        private void OpenRecipeBook() {
+            recipeBookWindow.SetActive(true);
+
+            foreach (var item in allItems) {
+                if (item.firstCraftingItem == null || item.secondCraftingItem == null) {
+                    continue;
+                }
+                
+                var newItem = Instantiate(recipeItemPrefab, recipesContainer);
+                newItem.transform.localScale = new Vector3(1, 1, 1);
+
+                var newItemRecipeScript = newItem.GetComponent<CraftingRecipeItem>();
+                newItemRecipeScript.firstItem.sprite = item.firstCraftingItem.itemIcon;
+                newItemRecipeScript.secondItem.sprite = item.secondCraftingItem.itemIcon;
+                newItemRecipeScript.resultItem.sprite = item.itemIcon;
+            }
+        }
+
+        private void CloseRecipeBook() {
+            for (var i = 0; i < recipesContainer.childCount; i++) {
+                Destroy(recipesContainer.GetChild(i).gameObject);
+            }
+            
+            recipeBookWindow.SetActive(false);
         }
     }
 }

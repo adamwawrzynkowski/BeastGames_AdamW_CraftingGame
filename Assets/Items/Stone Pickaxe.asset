@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Stone Pickaxe
   m_EditorClassIdentifier: 
   itemName: Stone Pickaxe
-  itemIcon: {fileID: 21300000, guid: 67d7f6ee919204639987f1e8c784b277, type: 3}
+  itemIcon: {fileID: 21300000, guid: 9b90121f10e2f45038466ac0ce4f85ab, type: 3}
   itemPrefab: {fileID: 0}
   firstCraftingItem: {fileID: 11400000, guid: db8a5d5c3bb1a453c9f2b8e39af20589, type: 2}
   secondCraftingItem: {fileID: 11400000, guid: 04c7d50fba59a4d7e9e492f4e62374d7, type: 2}

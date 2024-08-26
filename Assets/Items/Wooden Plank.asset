@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Wooden Plank
   m_EditorClassIdentifier: 
   itemName: Wooden Plank
-  itemIcon: {fileID: 21300000, guid: 67d7f6ee919204639987f1e8c784b277, type: 3}
+  itemIcon: {fileID: 21300000, guid: bfe394b0865934e8fa33d23a0b52d47c, type: 3}
   itemPrefab: {fileID: 0}
   firstCraftingItem: {fileID: 11400000, guid: 10468888bb3b043c3a3abb904165a833, type: 2}
   secondCraftingItem: {fileID: 11400000, guid: 10468888bb3b043c3a3abb904165a833, type: 2}
