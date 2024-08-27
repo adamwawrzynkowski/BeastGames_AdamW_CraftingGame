@@ -7,6 +7,11 @@ namespace Items {
     public class Item : MonoBehaviour, IInteractable {
         [Header("Settings")]
         [SerializeField] private ItemSO assignedItem;
+        [SerializeField] private bool duplicable = true;
+
+        public void ChangeDuplicableMode(bool mode) {
+            duplicable = mode;
+        }
 
         public ItemSO GetInfo() {
             return assignedItem;
@@ -21,7 +26,7 @@ namespace Items {
             Equipment.Equipment.Instance.AddItem(assignedItem, true);
             ConsoleController.Instance.ShowMessage("New item: " + assignedItem.itemName, 2.0f);
             
-            Respawn();
+            if (duplicable) Respawn(); else Destroy(gameObject);
         }
 
         private void Respawn() {

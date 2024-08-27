@@ -114,6 +114,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   assignedItem: {fileID: 11400000, guid: 1932df1c5c10a43bc894cdc75b65f55d, type: 2}
+  duplicable: 0
 --- !u!54 &3560590046528892723
 Rigidbody:
   m_ObjectHideFlags: 0

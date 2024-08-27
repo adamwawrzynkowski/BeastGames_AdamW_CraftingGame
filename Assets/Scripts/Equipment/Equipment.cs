@@ -3,6 +3,7 @@ using System.Linq;
 using Audio;
 using Console;
 using Crafting;
+using Items;
 using Player;
 using Scriptables;
 using TMPro;
@@ -124,6 +125,9 @@ namespace Equipment {
             
             var newItem = Instantiate(item.itemPrefab);
             newItem.transform.position = PlayerController.Instance.transform.position;
+
+            var _item = newItem.GetComponent<Item>();
+            _item.ChangeDuplicableMode(false);
 
             var itemRigidbody = newItem.GetComponent<Rigidbody>();
             itemRigidbody.AddExplosionForce(20.0f, newItem.transform.position, 1.0f);
