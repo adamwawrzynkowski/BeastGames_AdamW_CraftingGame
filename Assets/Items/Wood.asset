@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Wood
   itemIcon: {fileID: 21300000, guid: e021218e513a444f48c805b6c357f14c, type: 3}
-  itemPrefab: {fileID: 0}
+  itemPrefab: {fileID: 1159219986282157736, guid: 9efe5bbed9ed149a39308b6577e31ad7,
+    type: 3}
   firstCraftingItem: {fileID: 0}
   secondCraftingItem: {fileID: 0}
   craftingChance: 0

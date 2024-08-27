@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
+using Audio;
+using Console;
 using Crafting;
+using Player;
 using Scriptables;
 using TMPro;
 using UnityEngine;
@@ -47,37 +50,23 @@ namespace Equipment {
         public List<CraftingSlot> GetCraftingSlots => craftingSlots;
         
         private ItemSO pickedItem;
+        
         private RectTransform pickedItemRect;
 
         private InventoryState state = InventoryState.Closed;
-        
-        public ItemSO testitemone;
-        public ItemSO testitemtwo;
-        public ItemSO testitemthree;
+        public InventoryState GetState() => state;
         
         private void Start() {
             Construct();
         }
 
         private void Update() {
-            if (Input.GetKeyDown(KeyCode.Alpha1)) {
-                AddItem(testitemone);
-            }
-            
-            if (Input.GetKeyDown(KeyCode.Alpha2)) {
-                AddItem(testitemtwo);
-            }
-            
-            if (Input.GetKeyDown(KeyCode.Alpha3)) {
-                AddItem(testitemthree);
-            }
-
             if (Input.GetKeyDown(toggleInventoryKey)) {
                 ToggleInventory();
             }
             
             if (Input.GetKeyDown(KeyCode.Escape)) {
-                ToggleInventory(true);
+                if (state == InventoryState.Opened) ToggleInventory(true);
             }
             
             if (pickedItem == null) return;
@@ -114,20 +103,30 @@ namespace Equipment {
                 Crafting.Crafting.Instance.CloseRecipeBook();
                 inventoryWindow.SetActive(false);
             }
+            
+            AudioController.Instance.PlayAudio(AudioController.Instance.inventoryClip, 0.65f);
         }
 
-        public void AddItem(ItemSO item) {
+        public void AddItem(ItemSO item, bool dontSpawnNew = false) {
             var slot = FindAvailableSlot();
             if (slot == null) {
-                ThrowItem(item);
+                if (!dontSpawnNew) ThrowItem(item);
+                ConsoleController.Instance.ShowMessage("Inventory is full!", 2.0f);
                 return;
             }
             
             slot.Assign(item);
+            AudioController.Instance.PlayAudio(AudioController.Instance.collectClip, 0.65f);
         }
 
         public void ThrowItem(ItemSO item) {
+            if (item == null) return;
             
+            var newItem = Instantiate(item.itemPrefab);
+            newItem.transform.position = PlayerController.Instance.transform.position;
+
+            var itemRigidbody = newItem.GetComponent<Rigidbody>();
+            itemRigidbody.AddExplosionForce(20.0f, newItem.transform.position, 1.0f);
         }
 
         private EquipmentSlot FindSlot(ItemSO item, int id) {
@@ -188,24 +187,30 @@ namespace Equipment {
             return slot;
         }
 
-        private EquipmentSlot FindAvailableSlot() {
+        public EquipmentSlot FindAvailableSlot() {
             return slots.FirstOrDefault(slot => slot.GetInfo() == null);
         }
 
-        public void ShowTooltip(ItemSO item, int id) {
-            if (pickedItem != null) {
+        public void ShowTooltip(ItemSO item, int id, bool throwing = false) {
+            if (!throwing && pickedItem != null) {
                 HideTooltip();
                 return;
             }
             
             itemTooltipWindow.gameObject.SetActive(true);
-            var slot = FindSlot(item, id) == null ? FindCraftingSlot(item, id).transform : FindSlot(item, id).transform;
 
-            itemTooltipWindow.transform.position = new Vector3(
-                slot.position.x + tooltipOffset.x * canvas.scaleFactor,
-                slot.position.y + tooltipOffset.y * canvas.scaleFactor);
+            if (!throwing) {
+                var slot = FindSlot(item, id) == null ? FindCraftingSlot(item, id).transform : FindSlot(item, id).transform;
 
-            itemTooltipItemNameText.text = item.itemName;
+                itemTooltipWindow.transform.position = new Vector3(
+                    slot.position.x + tooltipOffset.x * canvas.scaleFactor,
+                    slot.position.y + tooltipOffset.y * canvas.scaleFactor);
+            } else {
+                itemTooltipWindow.transform.position = Input.mousePosition;
+            }
+            
+            var prefix = throwing ? "Throw: " : "";
+            itemTooltipItemNameText.text = prefix + item.itemName;
         }
 
         public void HideTooltip() {

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Mace
   itemIcon: {fileID: 21300000, guid: ab7c1b978bbfa42fcaac160e1d348e59, type: 3}
-  itemPrefab: {fileID: 2574562804041788181, guid: 42ddeb68fcebe42fab6e8f95710eeb56,
+  itemPrefab: {fileID: 1878254792956855185, guid: 7e9f3cbb61c174d2ea3f93017ddd6072,
     type: 3}
   firstCraftingItem: {fileID: 11400000, guid: db8a5d5c3bb1a453c9f2b8e39af20589, type: 2}
   secondCraftingItem: {fileID: 11400000, guid: c0636f1ec53544312877a6db5ecaf849, type: 2}

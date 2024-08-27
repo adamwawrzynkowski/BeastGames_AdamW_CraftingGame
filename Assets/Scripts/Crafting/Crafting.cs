@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Audio;
 using Scriptables;
 using TMPro;
 using UnityEngine;
@@ -127,6 +128,8 @@ namespace Crafting {
             
             RemoveCraftingItems();
             Refresh();
+            
+            AudioController.Instance.PlayAudio(AudioController.Instance.craftingClip, 0.5f);
         }
 
         private IEnumerator DoCraft(ItemSO item) {
