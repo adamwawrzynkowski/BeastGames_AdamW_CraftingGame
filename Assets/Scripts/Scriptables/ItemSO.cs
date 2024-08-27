@@ -4,7 +4,7 @@ namespace Scriptables {
     [CreateAssetMenu(fileName = "Item", menuName = "CraftingGame/New Item")]
     public class ItemSO : ScriptableObject {
         [Header("Settings")]
-        public string itemName;
+        public string itemName = "New Item";
         public Sprite itemIcon;
         public GameObject itemPrefab;
 
@@ -13,6 +13,6 @@ namespace Scriptables {
         public ItemSO secondCraftingItem;
 
         [Space] [Range(0, 100)]
-        public int craftingChance;
+        public int craftingChance = 100;
     }
 }

@@ -449,6 +449,7 @@ MonoBehaviour:
   itemTooltipWindow: {fileID: 1026254394}
   itemTooltipItemNameText: {fileID: 562657461}
   tooltipOffset: {x: 0, y: -128}
+  nullItem: {fileID: 11400000, guid: 74144deee3eba46cfafdd09b14609c9c, type: 2}
 --- !u!1 &210062922
 GameObject:
   m_ObjectHideFlags: 0

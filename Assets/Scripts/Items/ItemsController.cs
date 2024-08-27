@@ -10,6 +10,7 @@ namespace Items {
         [Header("Spawn Area")]
         [SerializeField] private BoxCollider area;
 
+        // Search for position inside bounds and set item position
         public void RespawnItem(Transform t) {
             var bounds = GetSpawnBounds();
             t.position = new Vector3(Random.Range(bounds.min.x, bounds.max.x), 1.5f,

@@ -1,5 +1,3 @@
-using System;
-using Console;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -8,6 +6,7 @@ namespace Equipment {
         private bool focused;
         
         private void Update() {
+            // When area outside inventory is focused and user clicked left mouse button - throw an item
             if (focused && Input.GetKeyDown(KeyCode.Mouse0)) {
                 Equipment.Instance.ThrowItem(Equipment.Instance.GetPickedItem());
                 Equipment.Instance.RemovePickedItem();
@@ -15,6 +14,7 @@ namespace Equipment {
             }
         }
 
+        // Check if user stopped pointing this area
         public void OnPointerEnter(PointerEventData eventData) {
             if (eventData.pointerEnter && Equipment.Instance.GetPickedItem() != null) {
                 focused = true;
@@ -22,6 +22,7 @@ namespace Equipment {
             }
         }
 
+        // Check if user stopped pointing this area
         public void OnPointerExit(PointerEventData eventData) {
             if (eventData.fullyExited) {
                 focused = false;

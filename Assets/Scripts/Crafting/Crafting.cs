@@ -54,6 +54,7 @@ namespace Crafting {
         public CurrentState GetState() => state;
 
         private void Start() {
+            // Initialize crafting slots
             firstCraftingSlot.Init(-1);
             secondCraftingSlot.Init(-2);
             
@@ -66,12 +67,15 @@ namespace Crafting {
             ClearCraftingResult();
         }
 
+        // Refresh crafting results
         public void Refresh() {
+            // Check if slots are empty
             if (firstCraftingSlot.GetInfo() == null || secondCraftingSlot.GetInfo() == null) {
                 ClearCraftingResult();
                 return;
             }
             
+            // Iterate through recipes to show correct one based on the items in slots
             foreach (var item in allItems) {
                 var recipeFound = false;
                 
@@ -83,6 +87,7 @@ namespace Crafting {
                     recipeFound = true;
                 }
 
+                // If recipe has been found, show the result
                 if (recipeFound) {
                     ShowCraftingResult(item);
                     return;
@@ -92,11 +97,14 @@ namespace Crafting {
             ClearCraftingResult();
         }
 
+        // Show crafting result
         private void ShowCraftingResult(ItemSO item) {
+            // Assign icon and item name
             craftingResultIcon.sprite = item.itemIcon;
             craftingResultIcon.enabled = true;
             craftingResultItemName.text = item.itemName;
             
+            // Show crafting chance and assign color based on the chance
             var textColor = "";
             if (item.craftingChance <= 25) textColor = "<color=red>";
             if (item.craftingChance > 25) textColor = "<color=yellow>";
@@ -107,6 +115,7 @@ namespace Crafting {
             craftButton.onClick.AddListener(() => Craft(item));
         }
 
+        // Clear crafting window
         private void ClearCraftingResult() {
             craftingResultIcon.sprite = null;
             craftingResultIcon.enabled = false;
@@ -117,12 +126,15 @@ namespace Crafting {
             craftButton.onClick.RemoveAllListeners();
         }
 
+        // Remove items from crafting slots
         private void RemoveCraftingItems() {
             firstCraftingSlot.Remove();
             secondCraftingSlot.Remove();
         }
 
+        // Craft item
         private void Craft(ItemSO item) {
+            // Change state to crafting
             state = CurrentState.Crafting;
             StartCoroutine(DoCraft(item));
             
@@ -133,6 +145,7 @@ namespace Crafting {
         }
 
         private IEnumerator DoCraft(ItemSO item) {
+            // Show progress window UI
             progressWindow.SetActive(true);
             progressPanel.SetActive(true);
             progressResultPanel.SetActive(false);
@@ -140,22 +153,31 @@ namespace Crafting {
             progressItemIcon.sprite = item.itemIcon;
             progressBar.fillAmount = 0;
             
+            // Animate crafting progress bar
             for (var i = 0; i < 100; i++) {
                 progressBar.fillAmount += 0.01f;
                 yield return new WaitForSeconds(0.01f);
             }
             
+            // Hide progress window
             progressPanel.SetActive(false);
             progressResultPanel.SetActive(true);
             
+            // Show results
+            // Add item to equipment
             if (CountSuccessChance(item)) {
                 Equipment.Equipment.Instance.AddItem(item);
+                
+                // Invoke assigned events
                 foreach (var _event in onCraftingSucceeded) {
                     _event.Invoke();
                 }
                 
                 progressResultText.text = "<color=green>Success!</color>";
             } else {
+                // Show failed result
+                
+                // Invoke assigned events
                 foreach (var _event in onCraftingFailed) {
                     _event.Invoke();
                 }
@@ -166,17 +188,21 @@ namespace Crafting {
             yield return new WaitForSeconds(2.0f);
             progressWindow.SetActive(false);
             
+            // Change state back to none
             state = CurrentState.None;
         }
 
+        // Count success rate of the crafting
         private bool CountSuccessChance(ItemSO item) {
             return Random.Range(0, 101) <= item.craftingChance;
         }
 
+        // Show recipes window UI
         private void OpenRecipeBook() {
             if (recipeBookWindow.activeSelf) return;
             recipeBookWindow.SetActive(true);
 
+            // Search for recipes in items list
             foreach (var item in allItems) {
                 if (item.firstCraftingItem == null || item.secondCraftingItem == null) {
                     continue;
@@ -192,6 +218,7 @@ namespace Crafting {
             }
         }
 
+        // Close recipes window UI
         public void CloseRecipeBook() {
             for (var i = 0; i < recipesContainer.childCount; i++) {
                 Destroy(recipesContainer.GetChild(i).gameObject);
